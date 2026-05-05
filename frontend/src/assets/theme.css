@@ -1,0 +1,17 @@
+:root {
+  --bg-main: #0b0f1a;
+  --bg-card: #12182b;
+  --primary: #7c7cff;
+  --secondary: #00e5ff;
+  --accent: #c77dff;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --danger: #ef4444;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(120deg, #0b0f1a, #111827);
+  color: var(--text-main);
+  font-family: "Inter", system-ui;
+}
