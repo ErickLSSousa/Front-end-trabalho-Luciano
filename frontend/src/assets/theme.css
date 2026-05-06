@@ -1,17 +1,109 @@
+/* ═══════════════════════════════════════════════
+   SENAIBANK — Theme
+   Design: dark banking, premium & trustworthy
+═══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* ── Tokens ──────────────────────────────────── */
 :root {
-  --bg-main: #0b0f1a;
-  --bg-card: #12182b;
-  --primary: #7c7cff;
-  --secondary: #00e5ff;
-  --accent: #c77dff;
-  --text-main: #e5e7eb;
-  --text-muted: #9ca3af;
-  --danger: #ef4444;
+  /* Background layers */
+  --sb-bg:           #080c14;
+  --sb-bg-2:         #0d1220;
+  --sb-surface:      #111827;
+  --sb-surface-2:    #1a2235;
+  --sb-surface-3:    #202c42;
+
+  /* Brand */
+  --sb-blue:         #4f8ef7;
+  --sb-blue-dim:     rgba(79, 142, 247, 0.12);
+  --sb-blue-glow:    rgba(79, 142, 247, 0.25);
+  --sb-violet:       #7c5cfc;
+  --sb-violet-dim:   rgba(124, 92, 252, 0.12);
+  --sb-gradient:     linear-gradient(135deg, #4f8ef7 0%, #7c5cfc 100%);
+  --sb-gradient-r:   linear-gradient(135deg, #7c5cfc 0%, #4f8ef7 100%);
+
+  /* Semantic */
+  --sb-success:      #22c55e;
+  --sb-success-dim:  rgba(34, 197, 94, 0.12);
+  --sb-danger:       #ef4444;
+  --sb-danger-dim:   rgba(239, 68, 68, 0.12);
+  --sb-warning:      #f59e0b;
+  --sb-warning-dim:  rgba(245, 158, 11, 0.12);
+
+  /* Text */
+  --sb-text:         #e8eaf0;
+  --sb-text-2:       #9ca3af;
+  --sb-text-3:       #4b5563;
+
+  /* Borders */
+  --sb-border:       rgba(255, 255, 255, 0.07);
+  --sb-border-2:     rgba(255, 255, 255, 0.12);
+  --sb-border-accent:rgba(79, 142, 247, 0.35);
+
+  /* Radius */
+  --sb-r-sm:  8px;
+  --sb-r-md:  12px;
+  --sb-r-lg:  18px;
+  --sb-r-xl:  24px;
+
+  /* Shadow */
+  --sb-shadow-sm: 0 2px 8px rgba(0,0,0,0.35);
+  --sb-shadow-md: 0 8px 32px rgba(0,0,0,0.45);
+  --sb-shadow-lg: 0 20px 60px rgba(0,0,0,0.55);
+  --sb-shadow-blue: 0 8px 32px rgba(79,142,247,0.2);
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
 }
 
+/* ── Reset & Base ────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
 body {
-  margin: 0;
-  background: linear-gradient(120deg, #0b0f1a, #111827);
-  color: var(--text-main);
-  font-family: "Inter", system-ui;
+  font-family: var(--font-body);
+  background-color: var(--sb-bg);
+  color: var(--sb-text);
+  min-height: 100vh;
+  line-height: 1.6;
 }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+a { color: var(--sb-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Background grid ─────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  height: 60vh;
+  background: radial-gradient(ellipse, rgba(79,142,247,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root { position: relative; z-index: 1; }

@@ -4,21 +4,51 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { api } from "../services/api";
 
-export default function TransactionCard({ type, account }) {
-  const [amount, setAmount] = useState(null);
+const ENDPOINTS = {
+  deposit:  "/transactions/deposit",
+  withdraw: "/transactions/withdraw",
+  transfer: "/transactions/transfer",
+};
+
+export default function TransactionCard({ type, accountId, onSuccess }) {
+  const [amount, setAmount]       = useState(null);
   const [toAccount, setToAccount] = useState("");
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState("");
 
   async function submit() {
-    if (type === "deposit") {
-      await api.post("/transactions/deposit", {
-        accountId: account.id,
+    setError("");
+
+    if (!amount || amount <= 0) {
+      setError("Informe um valor válido.");
+      return;
+    }
+    if (type === "transfer" && !toAccount.trim()) {
+      setError("Informe a conta destino.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await api.post(ENDPOINTS[type], {
+        accountId,
         amount,
+        ...(type === "transfer" && { toAccountId: toAccount }),
       });
+      setAmount(null);
+      setToAccount("");
+      onSuccess?.(); // avisa o Dashboard para recarregar o saldo
+    } catch (err) {
+      setError(err.response?.data?.message || "Erro ao processar transação.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="glass-card p-4 flex flex-column gap-3">
+    <div className="flex flex-column gap-3 mt-3">
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
       {type === "transfer" && (
         <InputText
           placeholder="Conta destino"
@@ -33,9 +63,15 @@ export default function TransactionCard({ type, account }) {
         mode="currency"
         currency="BRL"
         locale="pt-BR"
+        placeholder="R$ 0,00"
       />
 
-      <Button label="Confirmar" onClick={submit} />
+      <Button
+        label={loading ? "Processando..." : "Confirmar"}
+        onClick={submit}
+        disabled={loading}
+        loading={loading}
+      />
     </div>
   );
 }

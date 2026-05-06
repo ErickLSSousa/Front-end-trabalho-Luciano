@@ -1,22 +1,89 @@
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
+/* ═══════════════════════════════════════════════
+   SENAIBANK — Animations
+═══════════════════════════════════════════════ */
 
-.slide-up {
-  animation: slideUp 0.4s ease forwards;
-}
-
-.glow:hover {
-  box-shadow: 0 0 20px var(--accent);
-  transform: scale(1.02);
+/* ── Keyframes ───────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(79,142,247,0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(79,142,247,0); }
+  100% { box-shadow: 0 0 0 0 rgba(79,142,247,0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Utility classes ─────────────────────────── */
+.anim-fade-up   { animation: fadeUp  0.45s cubic-bezier(.22,.68,0,1.2) both; }
+.anim-fade-in   { animation: fadeIn  0.35s ease both; }
+.anim-fade-down { animation: fadeDown 0.35s ease both; }
+.anim-scale-in  { animation: scaleIn 0.35s cubic-bezier(.22,.68,0,1.2) both; }
+.anim-slide-left{ animation: slideLeft 0.4s ease both; }
+
+/* Stagger delays */
+.delay-1 { animation-delay: 0.05s; }
+.delay-2 { animation-delay: 0.10s; }
+.delay-3 { animation-delay: 0.15s; }
+.delay-4 { animation-delay: 0.20s; }
+.delay-5 { animation-delay: 0.25s; }
+.delay-6 { animation-delay: 0.30s; }
+
+/* Shimmer loading skeleton */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--sb-surface) 25%,
+    var(--sb-surface-2) 50%,
+    var(--sb-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--sb-r-md);
+}
+
+/* Hover lift */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sb-shadow-md);
+}
+
+/* Pulse ring (usado em ícones de status) */
+.pulse-ring { animation: pulse-ring 2s ease-out infinite; }
