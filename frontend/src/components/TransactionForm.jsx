@@ -1,34 +1,42 @@
-import { TabView, TabPanel } from "primereact/tabview";
-import TransactionCard from "./TransactionCard";
+import { useState } from 'react'
 
-export default function TransactionTabs({ accountId, onSuccess }) {
+import api from '../services/api'
+
+export default function TransactionForm({
+  type,
+  title,
+  accountNumber
+}) {
+  const [amount, setAmount] = useState('')
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    try {
+      await api.post(`/accounts/${accountNumber}/${type}`, {
+        amount: Number(amount)
+      })
+
+      alert(`${title} realizado com sucesso!`)
+
+      window.location.reload()
+    } catch (error) {
+      alert('Erro na transação')
+    }
+  }
+
   return (
-    <div className="glass-card p-4 mt-4">
-      <TabView>
-        <TabPanel header="💰 Depósito">
-          <TransactionCard
-            type="deposit"
-            accountId={accountId}
-            onSuccess={onSuccess}
-          />
-        </TabPanel>
+    <form className="transaction-form" onSubmit={handleSubmit}>
+      <h3>{title}</h3>
 
-        <TabPanel header="💸 Saque">
-          <TransactionCard
-            type="withdraw"
-            accountId={accountId}
-            onSuccess={onSuccess}
-          />
-        </TabPanel>
+      <input
+        type="number"
+        placeholder="Valor"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
 
-        <TabPanel header="🔁 Transferência">
-          <TransactionCard
-            type="transfer"
-            accountId={accountId}
-            onSuccess={onSuccess}
-          />
-        </TabPanel>
-      </TabView>
-    </div>
-  );
+      <button type="submit">Confirmar</button>
+    </form>
+  )
 }

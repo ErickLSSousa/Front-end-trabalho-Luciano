@@ -1,20 +1,19 @@
-import { TabView, TabPanel } from "primereact/tabview";
-import TransactionCard from "./TransactionCard";
+import TransactionForm from './TransactionForm'
 
-export default function TransactionTabs({ account }) {
+export default function TransactionTabs({ accountNumber }) {
   return (
-    <TabView>
-      <TabPanel header="Depósito">
-        <TransactionCard type="deposit" account={account} />
-      </TabPanel>
+    <div className="tabs-container">
+      <TransactionForm
+        type="deposit"
+        title="Depósito"
+        accountNumber={accountNumber}
+      />
 
-      <TabPanel header="Saque">
-        <TransactionCard type="withdraw" account={account} />
-      </TabPanel>
-
-      <TabPanel header="Transferência">
-        <TransactionCard type="transfer" account={account} />
-      </TabPanel>
-    </TabView>
-  );
+      <TransactionForm
+        type="withdraw"
+        title="Saque"
+        accountNumber={accountNumber}
+      />
+    </div>
+  )
 }

@@ -1,14 +1,17 @@
-import { Card } from "primereact/card";
+import { Link } from 'react-router-dom'
 
 export default function AccountCard({ account }) {
   return (
-    <div className="col-12 md:col-4">
-      <Card className="glass-card">
-        <h3>Conta</h3>
-        <p className="text-2xl">
-          R$ {account.balance.toFixed(2)}
-        </p>
-      </Card>
+    <div className="account-card">
+      <h2>{account.name}</h2>
+
+      <p>Conta: {account.accountNumber}</p>
+
+      <p>Saldo: R$ {account.balance}</p>
+
+      <Link to={`/account/${account.accountNumber}`}>
+        Ver detalhes
+      </Link>
     </div>
-  );
+  )
 }

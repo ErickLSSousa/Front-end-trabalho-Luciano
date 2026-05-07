@@ -1,26 +1,41 @@
-import { useEffect, useState } from "react";
-import { api } from "../services/api";
-import Navbar from "../components/Navbar";
-import AccountCard from "../components/AccountCard";
+import { useEffect, useState } from 'react'
+
+import api from '../services/api'
+import Navbar from '../components/Navbar'
+import AccountCard from '../components/AccountCard'
 
 export default function Dashboard() {
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState([])
 
   useEffect(() => {
-    api.get("/accounts").then(res => setAccounts(res.data));
-  }, []);
+    loadAccounts()
+  }, [])
+
+  async function loadAccounts() {
+    try {
+      const response = await api.get('/accounts')
+      setAccounts(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
-    <div className="p-4">
+    <div>
       <Navbar />
 
-      <h2 className="mb-4">Minhas Contas</h2>
+      <div className="dashboard">
+        <h1>Contas Bancárias</h1>
 
-      <div className="grid">
-        {accounts.map(acc => (
-          <AccountCard key={acc.id} account={acc} />
-        ))}
+        <div className="accounts-grid">
+          {accounts.map((account) => (
+            <AccountCard
+              key={account.accountNumber}
+              account={account}
+            />
+          ))}
+        </div>
       </div>
     </div>
-  );
+  )
 }
