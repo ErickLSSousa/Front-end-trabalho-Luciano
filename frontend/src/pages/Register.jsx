@@ -30,57 +30,59 @@ export default function Register() {
 
       navigate('/login')
     } catch (err) {
-      setError('Erro ao cadastrar usuário')
+      console.log(err)
+
+      setError(JSON.stringify(err.response.data))
     }
+
+    return (
+      <div className="auth-container">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <h1>Criar Conta</h1>
+
+          {error && <p className="error">{error}</p>}
+
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Nome"
+            onChange={handleChange}
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            name="cpf"
+            placeholder="CPF"
+            onChange={handleChange}
+          />
+
+
+          <input
+            type="text"
+            name="phone"
+            placeholder="Telefone"
+            onChange={handleChange}
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Senha"
+            onChange={handleChange}
+          />
+
+          <button type="submit">Cadastrar</button>
+
+          <Link to="/login">Já tenho conta</Link>
+        </form>
+      </div>
+    )
   }
-
-  return (
-    <div className="auth-container">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h1>Criar Conta</h1>
-
-        {error && <p className="error">{error}</p>}
-
-        <input
-          type="text"
-          name="fullname"
-          placeholder="Nome"
-          onChange={handleChange}
-        />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="cpf"
-          placeholder="CPF"
-          onChange={handleChange}
-        />
-
-
-        <input
-          type="text"
-          name="phone"
-          placeholder="Telefone"
-          onChange={handleChange}
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Senha"
-          onChange={handleChange}
-        />
-
-        <button type="submit">Cadastrar</button>
-
-        <Link to="/login">Já tenho conta</Link>
-      </form>
-    </div>
-  )
 }
