@@ -1,14 +1,36 @@
-import { useAuth } from "./context/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-export default function Routes() {
-  const { token } = useAuth();
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import AccountDetails from './pages/AccountDetails'
+import ProtectedRoute from './components/ProtectedRoute'
 
-  if (!token) {
-    return <Login />;
-  }
+export default function AppRoutes() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-  return <Dashboard />;
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/account/:accountNumber"
+          element={
+            <ProtectedRoute>
+              <AccountDetails />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  )
 }
