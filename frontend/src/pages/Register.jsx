@@ -1,37 +1,78 @@
-import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
-import { Button } from "primereact/button";
-import { useState } from "react";
-import { api } from "../services/api";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+
+import api from '../services/api'
 
 export default function Register() {
-  const [form, setForm] = useState({ name: "", email: "", cpf: "", password: "" });
+  const navigate = useNavigate()
 
-  async function handleRegister(e) {
-    e.preventDefault();
-    await api.post("/auth/register", form);
-    window.location.href = "/";
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    cpf: '',
+    password: ''
+  })
+
+  const [error, setError] = useState('')
+
+  function handleChange(e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+
+    try {
+      await api.post('/auth/register', form)
+
+      navigate('/login')
+    } catch (err) {
+      setError('Erro ao cadastrar usuário')
+    }
   }
 
   return (
-    <div className="flex align-items-center justify-content-center h-screen">
-      <form className="glass-card p-5 w-30" onSubmit={handleRegister}>
-        <h2 className="mb-4 text-center">Criar Conta</h2>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h1>Criar Conta</h1>
 
-        <InputText placeholder="Nome" className="w-full mb-3"
-          onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        {error && <p className="error">{error}</p>}
 
-        <InputText placeholder="CPF" className="w-full mb-3"
-          onChange={(e) => setForm({ ...form, cpf: e.target.value })} />
+        <input
+          type="text"
+          name="name"
+          placeholder="Nome"
+          onChange={handleChange}
+        />
 
-        <InputText placeholder="Email" className="w-full mb-3"
-          onChange={(e) => setForm({ ...form, email: e.target.value })} />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          onChange={handleChange}
+        />
 
-        <Password placeholder="Senha" className="w-full mb-4"
-          onChange={(e) => setForm({ ...form, password: e.target.value })} />
+         <input
+          type="text"
+          name="cpf"
+          placeholder="CPF"
+          onChange={handleChange}
+        />
 
-        <Button label="Registrar" className="w-full p-button-lg" />
+        <input
+          type="password"
+          name="password"
+          placeholder="Senha"
+          onChange={handleChange}
+        />
+
+        <button type="submit">Cadastrar</button>
+
+        <Link to="/login">Já tenho conta</Link>
       </form>
     </div>
-  );
+  )
 }
