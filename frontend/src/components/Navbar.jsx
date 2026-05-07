@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export default function Navbar() {
@@ -14,8 +14,9 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <h2>SenaiBank</h2>
-
+      <Link to="/" className="logo">
+  SenaiBank
+</Link>
       <button onClick={handleLogout}>Sair</button>
     </nav>
   )
