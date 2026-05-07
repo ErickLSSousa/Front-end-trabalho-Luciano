@@ -12,14 +12,20 @@ export default function Dashboard() {
   }, [])
 
   async function loadAccounts() {
-    try {
-      const response = await api.get('/accounts')
-      setAccounts(response.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  try {
+    const response = await api.get('/accounts')
 
+    console.log('RESPOSTA:', response.data)
+
+    setAccounts(response.data.accounts || response.data)
+  } catch (error) {
+    console.log('ERRO COMPLETO:', error)
+
+    console.log('RESPONSE:', error.response)
+
+    console.log('DATA:', error.response?.data)
+  }
+}
   return (
     <div>
       <Navbar />
