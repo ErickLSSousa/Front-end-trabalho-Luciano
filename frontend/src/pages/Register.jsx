@@ -7,12 +7,12 @@ export default function Register() {
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
-    name: '',
+    fullName: '',
     email: '',
     cpf: '',
+    phone: '',
     password: ''
   })
-
   const [error, setError] = useState('')
 
   function handleChange(e) {
@@ -43,7 +43,7 @@ export default function Register() {
 
         <input
           type="text"
-          name="name"
+          name="fullname"
           placeholder="Nome"
           onChange={handleChange}
         />
@@ -55,10 +55,18 @@ export default function Register() {
           onChange={handleChange}
         />
 
-         <input
+        <input
           type="text"
           name="cpf"
           placeholder="CPF"
+          onChange={handleChange}
+        />
+
+
+        <input
+          type="text"
+          name="phone"
+          placeholder="Telefone"
           onChange={handleChange}
         />
 
