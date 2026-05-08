@@ -1,106 +1,168 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-
+import { useParams, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import api from '../services/api'
-import Navbar from '../components/Navbar'
-import TransactionTabs from '../components/TransactionTabs'
-import TransactionCard from '../components/TransactionCard'
 
 export default function AccountDetails() {
   const { accountNumber } = useParams()
 
   const [balance, setBalance] = useState(0)
   const [statement, setStatement] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  async function loadData() {
+    setError('')
+    setLoading(true)
+
+    try {
+      const balanceRes = await api.get(`/accounts/${accountNumber}/balance`)
+      const statementRes = await api.get(`/accounts/${accountNumber}/statement`)
+
+      setBalance(balanceRes.data.balance)
+      setStatement(statementRes.data.statement || [])
+    } catch (err) {
+      setError('Erro ao carregar dados da conta')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    loadBalance()
-    loadStatement()
-  }, [])
-
-  async function loadBalance() {
-    const response = await api.get(
-      `/accounts/${accountNumber}/balance`
-    )
-
-    setBalance(response.data.balance)
-  }
-
-  async function loadStatement() {
-    const response = await api.get(
-      `/accounts/${accountNumber}/statement`
-    )
-
-    setStatement(response.data.statement || [])
-  }
+    loadData()
+  }, [accountNumber])
 
   return (
-  <div>
-    <Navbar />
+    <div className="fade-in">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="card"
+      >
+        <h2>Conta {accountNumber}</h2>
+        <p style={{ marginBottom: 12 }}>Saldo disponível</p>
 
-    <div className="account-details">
-
-      <div className="account-header">
-        <h1>Conta {accountNumber}</h1>
-      </div>
-
-      <div className="balance-card">
-        <p>Saldo disponível</p>
-
-        <h2>
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          style={{
+            fontSize: '2.5rem',
+            fontWeight: 700,
+            background: 'linear-gradient(135deg,#22d3ee,#facc15)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}
+        >
           R$ {Number(balance).toFixed(2)}
-        </h2>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="actions-grid">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="card"
+      >
+        <h3 style={{ marginBottom: 16 }}>Ações</h3>
 
-        <div className="action-card">
-          <h3>Movimentações</h3>
+        <div
+          style={{
+            display: 'flex',
+            gap: 16,
+            flexWrap: 'wrap'
+          }}
+        >
+          <Link to="/transfer">
+            <button style={{ width: '180px' }}>
+              Transferir
+            </button>
+          </Link>
 
-          <TransactionTabs accountNumber={accountNumber} />
+          <Link to="/pix">
+            <button style={{ width: '180px' }}>
+              Área PIX
+            </button>
+          </Link>
+
+          <button
+            style={{ width: '180px' }}
+            onClick={loadData}
+          >
+            Atualizar
+          </button>
         </div>
+      </motion.div>
 
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35 }}
+        className="card"
+      >
+        <h3 style={{ marginBottom: 20 }}>Extrato</h3>
 
-      <div className="statement-section">
+        {loading && <p>Carregando...</p>}
 
-        <h2>Extrato</h2>
+        {!loading && statement.length === 0 && (
+          <p>Nenhuma movimentação encontrada</p>
+        )}
 
-        <div className="transactions">
-
-          {statement.length === 0 ? (
-            <p>Nenhuma movimentação encontrada.</p>
-          ) : (
-            statement.map((item, index) => (
-              <TransactionCard
+        {!loading && statement.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {statement.map((item, index) => (
+              <motion.div
                 key={index}
-                transaction={item}
-              />
-            ))
-          )}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                style={{
+                  padding: 16,
+                  borderRadius: 12,
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.03)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <div>
+                  <strong>{item.type}</strong>
+                  <div style={{ fontSize: 13, color: '#94a3b8' }}>
+                    {new Date(item.date).toLocaleString('pt-BR')}
+                  </div>
+                </div>
 
-        </div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    color:
+                      item.type.includes('WITHDRAW') ||
+                      item.type.includes('TRANSFER_OUT')
+                        ? '#ef4444'
+                        : '#22c55e'
+                  }}
+                >
+                  R$ {Number(item.amount).toFixed(2)}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
-      </div>
-
-      <div className="see-also">
-
-        <h2>Ver também</h2>
-
-        <div className="see-also-links">
-
-          <a href="/">
-            Dashboard
-          </a>
-
-          <a href={`/account/${accountNumber}`}>
-            Atualizar página
-          </a>
-
-        </div>
-
-      </div>
-
+        {error && (
+          <div
+            style={{
+              marginTop: 12,
+              color: '#ef4444',
+              fontSize: 14
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </motion.div>
     </div>
-  </div>
   )
 }

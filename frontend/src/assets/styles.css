@@ -1,31 +1,94 @@
-:root {
-  --primary: #6d28d9;
-  --secondary: #2563eb;
-  --bg: #0f172a;
-  --card: #111827;
-  --text: #e5e7eb;
+/* ====== Cards ====== */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  animation: fadeUp 0.4s ease both;
 }
 
-body {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  font-family: "Inter", system-ui;
-  color: var(--text);
-}
-
-.glass-card {
-  background: rgba(17, 24, 39, 0.85);
+/* ====== Navbar ====== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15,22,41,0.85);
   backdrop-filter: blur(12px);
-  border-radius: 16px;
-  animation: fadeUp 0.6s ease;
+  padding: 14px 22px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ====== Buttons ====== */
+button {
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--accent)
+  );
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ====== Inputs ====== */
+input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  color: var(--text-main);
+  outline: none;
+  margin-bottom: 12px;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
+}
+
+/* ====== Balance highlight ====== */
+.balance {
+  font-size: 2.4rem;
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    var(--secondary),
+    var(--accent)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: scaleIn 0.35s ease-out;
+}
+.login-container {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  border: 1px solid rgba(255,215,0,0.3);
+  box-shadow: 0 0 40px rgba(255,215,0,0.15);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 380px;
+  margin: auto;
+}
+
+button {
+  background: linear-gradient(135deg, #2563eb, #facc15);
+  border: none;
+  color: #020617;
 }
