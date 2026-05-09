@@ -1,94 +1,244 @@
-/* ====== Cards ====== */
-.card {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 18px 22px;
-  margin-bottom: 20px;
-  border: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-soft);
-  animation: fadeUp 0.4s ease both;
-}
+/* ============================================================
+   AUTH PAGES — cole no seu styles.css (src/assets/styles.css)
+   ============================================================ */
 
-/* ====== Navbar ====== */
-.navbar {
+.auth-wrapper {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: rgba(15,22,41,0.85);
-  backdrop-filter: blur(12px);
-  padding: 14px 22px;
-  border-radius: var(--radius-lg);
-  margin-bottom: 24px;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
 }
 
-/* ====== Buttons ====== */
-button {
-  background: linear-gradient(
-    135deg,
-    var(--primary),
-    var(--accent)
-  );
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ====== Inputs ====== */
-input {
+.auth-card {
   width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-md);
-  padding: 10px 12px;
-  color: var(--text-main);
-  outline: none;
-  margin-bottom: 12px;
+  max-width: 480px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+  border: 1px solid rgba(250, 204, 21, 0.18);
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(250, 204, 21, 0.06);
+  backdrop-filter: blur(16px);
 }
 
-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
+/* --- Cabeçalho --- */
+.auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
-/* ====== Balance highlight ====== */
-.balance {
-  font-size: 2.4rem;
+.auth-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2563eb, #facc15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+}
+
+.auth-logo .pi {
+  font-size: 1.5rem;
+  color: #020617;
+}
+
+.auth-title {
+  font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(
-    135deg,
-    var(--secondary),
-    var(--accent)
-  );
+  background: linear-gradient(135deg, #38bdf8, #facc15);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: scaleIn 0.35s ease-out;
-}
-.login-container {
-  background: linear-gradient(135deg, #0f172a, #020617);
-  border: 1px solid rgba(255,215,0,0.3);
-  box-shadow: 0 0 40px rgba(255,215,0,0.15);
-  border-radius: 24px;
-  padding: 40px;
-  max-width: 380px;
-  margin: auto;
+  background-clip: text;
+  margin: 0;
 }
 
-button {
-  background: linear-gradient(135deg, #2563eb, #facc15);
-  border: none;
-  color: #020617;
+.auth-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Divider do PrimeReact */
+.auth-card .p-divider {
+  margin: 20px 0 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* --- Formulário --- */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Linha 2 colunas (CPF+Tel, Senha+Confirmar) */
+.auth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* --- Campo --- */
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+
+/* Wrapper do ícone + input */
+.auth-input-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.auth-input-wrap .pi {
+  position: absolute;
+  left: 12px;
+  color: #475569;
+  font-size: 0.9rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Inputs PrimeReact --- */
+.auth-card .p-inputtext {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  color: #e2e8f0 !important;
+  font-size: 0.9rem !important;
+  padding: 10px 12px 10px 2.4rem !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.auth-card .p-inputtext:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+  outline: none !important;
+}
+
+.auth-card .p-inputtext::placeholder {
+  color: #475569 !important;
+}
+
+/* --- Password PrimeReact --- */
+.auth-card .p-password {
+  width: 100%;
+  display: block;
+}
+
+/* Input dentro do Password (sem ícone de prefixo, só o toggle) */
+.auth-card .p-password .p-inputtext {
+  padding-left: 12px !important;
+  /* sem ícone esquerdo no Password */
+  padding-right: 2.8rem !important;
+}
+
+/* Ícone de mostrar/esconder senha */
+.auth-card .p-password-toggle-icon,
+.auth-card .p-password .p-icon-field .p-input-icon {
+  color: #475569 !important;
+}
+
+/* Panel de força da senha */
+.p-password-panel {
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  color: #e2e8f0 !important;
+}
+
+/* --- Botão --- */
+.auth-btn,
+.auth-btn.p-button {
+  width: 100%;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb, #facc15) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #020617 !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  padding: 12px !important;
+  margin-top: 4px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s !important;
+}
+
+.auth-btn:hover:not(:disabled),
+.auth-btn.p-button:hover:not(:disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.45) !important;
+}
+
+.auth-btn:disabled,
+.auth-btn.p-button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* --- Erro --- */
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 8px;
+  color: #f87171;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+}
+
+.auth-error .pi {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* --- Rodapé --- */
+.auth-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.auth-footer a {
+  color: #facc15;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+  color: #fde68a;
+}
+
+/* --- Responsivo --- */
+@media (max-width: 520px) {
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .auth-row {
+    grid-template-columns: 1fr;
+  }
 }
