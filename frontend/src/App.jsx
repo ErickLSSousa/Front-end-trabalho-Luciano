@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import AccountDetails from './pages/AccountDetails'
 import Transfer from './pages/Transfer'
+import Deposit from './pages/Deposit'
 
 import PixHome from './pages/pix/PixHome'
 import PixSend from './pages/pix/PixSend'
@@ -90,6 +91,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <Transfer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deposit"
+              element={
+                <ProtectedRoute>
+                  <Deposit />
                 </ProtectedRoute>
               }
             />

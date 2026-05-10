@@ -1,73 +1,42 @@
 import api from './api'
 
-const TOKEN_KEY = 'token'
+const authService = {
+  async register(data) {
+    const response = await api.post('/auth/register', data)
+    return response.data
+  },
 
-function setToken(token) {
-  localStorage.setItem(TOKEN_KEY, token)
-}
+  async login({ email, password }) {
+    const response = await api.post('/auth/login', { email, password })
+    const { token } = response.data
 
-function getToken() {
-  return localStorage.getItem(TOKEN_KEY)
-}
+    // Salva o token — a chave DEVE ser 'token' para o api.js encontrar
+    localStorage.setItem('token', token)
 
-function removeToken() {
-  localStorage.removeItem(TOKEN_KEY)
-}
+    return response.data
+  },
 
-function isAuthenticated() {
-  return Boolean(getToken())
-}
+  logout() {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  },
 
-async function login({ email, password }) {
-  const response = await api.post('/auth/login', {
-    email,
-    password
-  })
+  getToken() {
+    return localStorage.getItem('token')
+  },
 
-  const { token } = response.data
-  if (!token) {
-    throw new Error('Token inválido')
-  }
+  isAuthenticated() {
+    const token = localStorage.getItem('token')
+    if (!token) return false
 
-  setToken(token)
-  return token
-}
-
-async function register({
-  fullName,
-  cpf,
-  email,
-  phone,
-  password
-}) {
-  const response = await api.post('/auth/register', {
-    fullName,
-    cpf,
-    email,
-    phone,
-    password
-  })
-
-  return response.data
-}
-
-function logout() {
-  removeToken()
-}
-
-function getAuthHeader() {
-  const token = getToken()
-  if (!token) return {}
-  return {
-    Authorization: `Bearer ${token}`
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      // Verifica se o token não expirou (exp é em segundos)
+      return payload.exp > Date.now() / 1000
+    } catch {
+      return false
+    }
   }
 }
 
-export default {
-  login,
-  register,
-  logout,
-  isAuthenticated,
-  getToken,
-  getAuthHeader
-}
+export default authService

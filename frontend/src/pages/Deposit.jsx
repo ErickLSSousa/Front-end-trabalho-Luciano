@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import api from '../services/api'
 
 /* ─── CSS injetado ───────────────────────────────────────── */
-const TRANSFER_CSS = `
+const DEPOSIT_CSS = `
   @keyframes blob-move {
     0%,100% { transform: translate(0,0) scale(1); }
     33%      { transform: translate(40px,-30px) scale(1.08); }
@@ -24,10 +24,6 @@ const TRANSFER_CSS = `
     0%   { transform: scale(0.5); opacity: 0; }
     70%  { transform: scale(1.12); }
     100% { transform: scale(1); opacity: 1; }
-  }
-  @keyframes arrow-slide {
-    0%,100% { transform: translateX(0); }
-    50%      { transform: translateX(5px); }
   }
   @keyframes confetti-fall {
     0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
@@ -62,10 +58,11 @@ function formatBRL(v) {
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
+/* ─── Atalhos de valor ───────────────────────────────────── */
 const QUICK_VALUES = [50, 100, 200, 500, 1000]
 
-/* ─── FloatInput ─────────────────────────────────────────── */
-function FloatInput({ label, icon, value, onChange, type = 'text', readOnly = false, monospace = false }) {
+/* ─── FloatInput genérico ────────────────────────────────── */
+function FloatInput({ label, icon, value, onChange, type = 'text', readOnly = false }) {
     const [focused, setFocused] = useState(false)
     const active = focused || String(value).length > 0
 
@@ -74,33 +71,34 @@ function FloatInput({ label, icon, value, onChange, type = 'text', readOnly = fa
             {icon && (
                 <i className={`pi ${icon}`} style={{
                     position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
-                    color: focused ? '#38bdf8' : '#475569',
-                    zIndex: 2, transition: '.2s', fontSize: '.9rem', pointerEvents: 'none',
+                    color: focused ? '#38bdf8' : '#475569', zIndex: 2,
+                    transition: '.2s', fontSize: '.9rem', pointerEvents: 'none',
                 }} />
             )}
             <input
-                type={type} value={value}
-                onChange={readOnly ? undefined : onChange}
-                readOnly={readOnly}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
+                type={type} value={value} onChange={onChange} readOnly={readOnly}
+                onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
                 style={{
                     width: '100%', boxSizing: 'border-box',
-                    background: readOnly ? 'rgba(255,255,255,.02)' : focused ? 'rgba(37,99,235,.08)' : 'rgba(255,255,255,.04)',
+                    background: readOnly
+                        ? 'rgba(255,255,255,.02)'
+                        : focused ? 'rgba(37,99,235,.08)' : 'rgba(255,255,255,.04)',
                     border: `1px solid ${focused ? '#2563eb' : 'rgba(255,255,255,.08)'}`,
                     borderRadius: 14, color: readOnly ? '#64748b' : '#e2e8f0',
-                    fontSize: '.92rem', fontFamily: monospace ? 'monospace' : 'inherit',
+                    fontSize: '.92rem',
                     paddingTop: active ? 22 : 15, paddingBottom: active ? 8 : 15,
                     paddingLeft: icon ? 42 : 14, paddingRight: 14,
-                    outline: 'none', transition: '.2s', cursor: readOnly ? 'default' : 'text',
+                    outline: 'none', transition: '.2s',
                     boxShadow: focused
                         ? '0 0 0 4px rgba(37,99,235,.12), 0 0 24px rgba(37,99,235,.1)'
                         : 'inset 0 1px 0 rgba(255,255,255,.02)',
+                    cursor: readOnly ? 'default' : 'text',
                 }}
             />
             <label style={{
                 position: 'absolute', left: icon ? 42 : 14,
-                top: active ? 8 : '50%', transform: active ? 'none' : 'translateY(-50%)',
+                top: active ? 8 : '50%',
+                transform: active ? 'none' : 'translateY(-50%)',
                 fontSize: active ? '.64rem' : '.88rem',
                 color: focused ? '#38bdf8' : '#64748b',
                 textTransform: active ? 'uppercase' : 'none',
@@ -114,7 +112,7 @@ function FloatInput({ label, icon, value, onChange, type = 'text', readOnly = fa
     )
 }
 
-/* ─── AmountInput ────────────────────────────────────────── */
+/* ─── Input de valor com R$ ──────────────────────────────── */
 function AmountInput({ value, onChange }) {
     const [focused, setFocused] = useState(false)
     const active = focused || value.length > 0
@@ -124,9 +122,11 @@ function AmountInput({ value, onChange }) {
             {active && (
                 <span style={{
                     position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)',
-                    color: '#2563eb', fontSize: '1.2rem', fontWeight: 700,
-                    pointerEvents: 'none', zIndex: 2,
-                }}>R$</span>
+                    color: '#22c55e', fontSize: '1.2rem', fontWeight: 700,
+                    pointerEvents: 'none', zIndex: 2, lineHeight: 1,
+                }}>
+                    R$
+                </span>
             )}
             <input
                 type="text" inputMode="decimal" value={value}
@@ -136,15 +136,15 @@ function AmountInput({ value, onChange }) {
                 onBlur={() => setFocused(false)}
                 style={{
                     width: '100%', boxSizing: 'border-box',
-                    background: focused ? 'rgba(37,99,235,.08)' : 'rgba(255,255,255,.04)',
-                    border: `1px solid ${focused ? '#2563eb' : 'rgba(255,255,255,.08)'}`,
+                    background: focused ? 'rgba(34,197,94,.08)' : 'rgba(255,255,255,.04)',
+                    border: `1px solid ${focused ? '#22c55e' : 'rgba(255,255,255,.08)'}`,
                     borderRadius: 14, color: '#e2e8f0',
                     fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-.02em',
                     paddingTop: 18, paddingBottom: 18,
                     paddingLeft: active ? 52 : 18, paddingRight: 18,
                     outline: 'none', transition: '.2s', textAlign: active ? 'left' : 'center',
                     boxShadow: focused
-                        ? '0 0 0 4px rgba(37,99,235,.12), 0 0 32px rgba(37,99,235,.1)'
+                        ? '0 0 0 4px rgba(34,197,94,.12), 0 0 32px rgba(34,197,94,.1)'
                         : 'inset 0 1px 0 rgba(255,255,255,.02)',
                 }}
             />
@@ -162,12 +162,12 @@ function AmountInput({ value, onChange }) {
 }
 
 /* ─── Tela de sucesso ────────────────────────────────────── */
-function SuccessScreen({ data, onBack }) {
+function SuccessScreen({ amount, account, onBack }) {
     const confetti = Array.from({ length: 12 }, (_, i) => ({
-        color: ['#2563eb', '#38bdf8', '#facc15', '#a78bfa'][i % 4],
+        color: ['#22c55e', '#38bdf8', '#facc15', '#a78bfa'][i % 4],
         left: `${8 + i * 7}%`,
         delay: `${(i * 0.08).toFixed(2)}s`,
-        dur: `${0.7 + (i % 3) * 0.2}s`,
+        dur: `${0.7 + Math.random() * 0.5}s`,
     }))
 
     return (
@@ -190,50 +190,37 @@ function SuccessScreen({ data, onBack }) {
             {/* Ícone */}
             <div style={{
                 width: 88, height: 88, borderRadius: '50%', margin: '0 auto 24px',
-                background: 'linear-gradient(135deg, #1d4ed8, #2563eb)',
+                background: 'linear-gradient(135deg, #16a34a, #22c55e)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 0 16px rgba(37,99,235,.1), 0 8px 32px rgba(37,99,235,.4)',
+                boxShadow: '0 0 0 16px rgba(34,197,94,.1), 0 8px 32px rgba(34,197,94,.4)',
                 animation: 'success-pop .5s ease-out',
             }}>
-                <i className="pi pi-send" style={{ fontSize: '2.1rem', color: '#fff' }} />
+                <i className="pi pi-check" style={{ fontSize: '2.2rem', color: '#fff' }} />
             </div>
 
             <h2 style={{
                 margin: '0 0 8px', fontSize: '1.6rem', fontWeight: 800,
-                background: 'linear-gradient(135deg, #38bdf8, #2563eb)',
+                background: 'linear-gradient(135deg, #22c55e, #38bdf8)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
             }}>
-                Transferência realizada!
+                Depósito realizado!
             </h2>
             <p style={{ margin: '0 0 28px', color: '#64748b', fontSize: '.9rem' }}>
-                O valor foi enviado com sucesso 🚀
+                Sua conta foi creditada com sucesso
             </p>
 
             {/* Resumo */}
             <div style={{
-                background: 'rgba(37,99,235,.08)', border: '1px solid rgba(37,99,235,.2)',
+                background: 'rgba(34,197,94,.08)', border: '1px solid rgba(34,197,94,.2)',
                 borderRadius: 16, padding: '20px 24px', marginBottom: 28, textAlign: 'left',
-                display: 'flex', flexDirection: 'column', gap: 12,
             }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '.78rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 600 }}>Valor enviado</span>
-                    <span style={{ fontSize: '1.3rem', fontWeight: 800, color: '#38bdf8' }}>{formatBRL(data.amount)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <span style={{ fontSize: '.8rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 600 }}>Valor depositado</span>
+                    <span style={{ fontSize: '1.3rem', fontWeight: 800, color: '#22c55e' }}>{formatBRL(amount)}</span>
                 </div>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,.06)', paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '.78rem', color: '#64748b' }}>De</span>
-                        <span style={{ fontSize: '.82rem', color: '#94a3b8', fontFamily: 'monospace' }}>#{data.from}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '.78rem', color: '#64748b' }}>Para</span>
-                        <span style={{ fontSize: '.82rem', color: '#94a3b8', fontFamily: 'monospace' }}>#{data.to}</span>
-                    </div>
-                    {data.description && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontSize: '.78rem', color: '#64748b' }}>Descrição</span>
-                            <span style={{ fontSize: '.82rem', color: '#94a3b8' }}>{data.description}</span>
-                        </div>
-                    )}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,.06)', paddingTop: 12, display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '.8rem', color: '#64748b' }}>Conta</span>
+                    <span style={{ fontSize: '.85rem', color: '#94a3b8', fontFamily: 'monospace' }}>#{account}</span>
                 </div>
             </div>
 
@@ -242,9 +229,9 @@ function SuccessScreen({ data, onBack }) {
                 onClick={onBack}
                 style={{
                     width: '100%', padding: '14px', border: 'none', borderRadius: 14,
-                    background: 'linear-gradient(135deg, #1d4ed8, #2563eb)',
+                    background: 'linear-gradient(135deg, #16a34a, #22c55e)',
                     color: '#fff', fontWeight: 800, fontSize: '.95rem', cursor: 'pointer',
-                    boxShadow: '0 6px 24px rgba(37,99,235,.4)', position: 'relative', overflow: 'hidden',
+                    boxShadow: '0 6px 24px rgba(34,197,94,.35)', position: 'relative', overflow: 'hidden',
                 }}
             >
                 <span style={{
@@ -259,14 +246,13 @@ function SuccessScreen({ data, onBack }) {
     )
 }
 
-/* ─── Transfer ───────────────────────────────────────────── */
-export default function Transfer() {
+/* ─── Deposit ────────────────────────────────────────────── */
+export default function Deposit() {
     const navigate = useNavigate()
     const cardRef = useRef(null)
 
     const [accounts, setAccounts] = useState([])
-    const [fromAccount, setFromAccount] = useState('')
-    const [toAccount, setToAccount] = useState('')
+    const [selectedAccount, setSelectedAccount] = useState('')
     const [amount, setAmount] = useState('')
     const [description, setDescription] = useState('')
     const [loading, setLoading] = useState(false)
@@ -287,7 +273,7 @@ export default function Transfer() {
                 const list = Array.isArray(res.data) ? res.data : res.data.accounts || []
                 const filtered = list.filter(a => a.email === user.email)
                 setAccounts(filtered)
-                if (filtered.length === 1) setFromAccount(filtered[0].accountNumber)
+                if (filtered.length === 1) setSelectedAccount(filtered[0].accountNumber)
             })
             .catch(() => toast.error('Erro ao carregar contas', toastStyle(false)))
             .finally(() => setFetchingAccounts(false))
@@ -307,53 +293,46 @@ export default function Transfer() {
         if (/^\d*\.?\d{0,2}$/.test(raw)) setAmount(raw)
     }
 
+    function applyQuick(val) {
+        setAmount(String(val))
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
 
         const parsed = parseFloat(amount.replace(',', '.'))
-        const fromAcc = accounts.find(a => a.accountNumber === fromAccount)
 
-        if (!fromAccount) return toast.error('Selecione a conta de origem', toastStyle(false))
-        if (!toAccount.trim()) return toast.error('Informe a conta de destino', toastStyle(false))
-        if (fromAccount === toAccount.trim()) return toast.error('Conta de origem e destino não podem ser iguais', toastStyle(false))
+        if (!selectedAccount) return toast.error('Selecione uma conta', toastStyle(false))
         if (!parsed || parsed <= 0) return toast.error('Digite um valor válido', toastStyle(false))
-        if (fromAcc && parsed > Number(fromAcc.balance)) return toast.error('Saldo insuficiente', toastStyle(false))
+        if (parsed > 50000) return toast.error('Limite máximo por depósito: R$ 50.000', toastStyle(false))
 
         setLoading(true)
         try {
-            await api.post('/transactions/transfer', {
-                fromAccountNumber: fromAccount,
-                toAccountNumber: toAccount.trim(),
+            await api.post('/deposit', {
+                accountNumber: selectedAccount,
                 amount: parsed,
-                description: description || 'Transferência',
+                description: description || 'Depósito',
             })
-
-            setSuccessData({ amount: parsed, from: fromAccount, to: toAccount.trim(), description })
+            setSuccessData({ amount: parsed, account: selectedAccount })
             setSuccess(true)
         } catch (err) {
-            toast.error(err?.response?.data?.error || 'Erro ao realizar transferência', toastStyle(false))
+            toast.error(err?.response?.data?.error || 'Erro ao realizar depósito', toastStyle(false))
         } finally {
             setLoading(false)
         }
     }
 
-    const fromAcc = accounts.find(a => a.accountNumber === fromAccount)
-    const parsed = parseFloat(amount.replace(',', '.'))
-    const saldoApos = fromAcc ? Number(fromAcc.balance) - (parsed || 0) : null
+    const selectedAcc = accounts.find(a => a.accountNumber === selectedAccount)
 
     const blobs = [
-        { w: 460, h: 460, top: '-12%', left: '-8%', color: 'rgba(37,99,235,.14)', dur: '10s' },
-        { w: 360, h: 360, bottom: '5%', right: '-6%', color: 'rgba(56,189,248,.1)', dur: '13s' },
-        { w: 280, h: 280, top: '45%', left: '38%', color: 'rgba(250,204,21,.07)', dur: '16s' },
+        { w: 460, h: 460, top: '-12%', left: '-8%', color: 'rgba(34,197,94,.12)', dur: '10s' },
+        { w: 360, h: 360, bottom: '5%', right: '-6%', color: 'rgba(37,99,235,.12)', dur: '13s' },
+        { w: 280, h: 280, top: '45%', left: '38%', color: 'rgba(250,204,21,.08)', dur: '16s' },
     ]
 
     return (
-        <div style={{
-            minHeight: '100vh', background: '#020617',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 24, position: 'relative', overflow: 'hidden',
-        }}>
-            <style>{TRANSFER_CSS}</style>
+        <div style={{ minHeight: '100vh', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, position: 'relative', overflow: 'hidden' }}>
+            <style>{DEPOSIT_CSS}</style>
             <Toaster position="top-center" />
 
             {/* Blobs */}
@@ -376,11 +355,11 @@ export default function Transfer() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: .5, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                    width: '100%', maxWidth: 480, position: 'relative', zIndex: 1,
+                    width: '100%', maxWidth: 460, position: 'relative', zIndex: 1,
                     background: 'rgba(15,23,42,.78)', backdropFilter: 'blur(28px)',
                     border: '1px solid rgba(255,255,255,.08)', borderRadius: 28,
                     padding: '42px 38px',
-                    boxShadow: '0 0 0 1px rgba(255,255,255,.03), 0 24px 64px rgba(0,0,0,.55), 0 0 80px rgba(37,99,235,.07)',
+                    boxShadow: '0 0 0 1px rgba(255,255,255,.03), 0 24px 64px rgba(0,0,0,.55), 0 0 80px rgba(34,197,94,.06)',
                     transformStyle: 'preserve-3d',
                     transform: `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
                     transition: 'transform .12s ease',
@@ -389,21 +368,25 @@ export default function Transfer() {
                 {/* Spotlight */}
                 <div style={{
                     position: 'absolute', inset: 0, borderRadius: 28, pointerEvents: 'none',
-                    background: `radial-gradient(circle at ${spot.x}% ${spot.y}%, rgba(37,99,235,.09) 0%, transparent 60%)`,
+                    background: `radial-gradient(circle at ${spot.x}% ${spot.y}%, rgba(34,197,94,.08) 0%, transparent 60%)`,
                 }} />
 
                 {/* Borda glow top */}
                 <div style={{
                     position: 'absolute', top: 0, left: '20%', right: '20%', height: 1,
-                    background: 'linear-gradient(90deg, transparent, rgba(37,99,235,.5), transparent)',
+                    background: 'linear-gradient(90deg, transparent, rgba(34,197,94,.45), transparent)',
                 }} />
 
                 <AnimatePresence mode="wait">
                     {success ? (
-                        <SuccessScreen key="success" data={successData} onBack={() => navigate('/')} />
+                        <SuccessScreen
+                            key="success"
+                            amount={successData.amount}
+                            account={successData.account}
+                            onBack={() => navigate('/')}
+                        />
                     ) : (
                         <motion.div key="form" exit={{ opacity: 0, scale: .95 }} transition={{ duration: .2 }}>
-
                             {/* Header */}
                             <motion.div
                                 initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1 }}
@@ -411,22 +394,22 @@ export default function Transfer() {
                             >
                                 <div style={{
                                     width: 66, height: 66, borderRadius: 20,
-                                    background: 'linear-gradient(135deg, #1d4ed8, #38bdf8)',
+                                    background: 'linear-gradient(135deg, #16a34a, #22c55e)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    marginBottom: 14, boxShadow: '0 10px 32px rgba(37,99,235,.45)',
+                                    marginBottom: 14, boxShadow: '0 10px 32px rgba(34,197,94,.4)',
                                     animation: 'float-logo 3s ease-in-out infinite',
                                 }}>
-                                    <i className="pi pi-send" style={{ fontSize: '1.8rem', color: '#fff' }} />
+                                    <i className="pi pi-plus-circle" style={{ fontSize: '1.8rem', color: '#fff' }} />
                                 </div>
                                 <h1 style={{
                                     margin: 0, fontSize: '2rem', fontWeight: 800, letterSpacing: '-.04em',
-                                    background: 'linear-gradient(135deg, #e2e8f0, #38bdf8 50%, #2563eb)',
+                                    background: 'linear-gradient(135deg, #e2e8f0, #22c55e 50%, #38bdf8)',
                                     WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
                                 }}>
-                                    Transferência
+                                    Depositar
                                 </h1>
                                 <p style={{ marginTop: 6, color: '#64748b', fontSize: '.88rem' }}>
-                                    Envie dinheiro para qualquer conta 💸
+                                    Adicione saldo à sua conta 💰
                                 </p>
                             </motion.div>
 
@@ -434,26 +417,25 @@ export default function Transfer() {
 
                             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-                                {/* Conta de origem */}
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .16 }}
-                                    style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-                                >
-                                    <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>
-                                        Conta de origem
-                                    </label>
-
-                                    {accounts.length > 1 ? (
+                                {/* Seleção de conta */}
+                                {accounts.length > 1 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .16 }}
+                                        style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+                                    >
+                                        <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>
+                                            Conta de destino
+                                        </label>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                             {accounts.map(acc => (
                                                 <button
                                                     key={acc.accountNumber} type="button"
-                                                    onClick={() => setFromAccount(acc.accountNumber)}
+                                                    onClick={() => setSelectedAccount(acc.accountNumber)}
                                                     style={{
                                                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                                        padding: '13px 16px', borderRadius: 14, cursor: 'pointer',
-                                                        background: fromAccount === acc.accountNumber ? 'rgba(37,99,235,.12)' : 'rgba(255,255,255,.04)',
-                                                        border: `1px solid ${fromAccount === acc.accountNumber ? 'rgba(37,99,235,.4)' : 'rgba(255,255,255,.08)'}`,
+                                                        padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
+                                                        background: selectedAccount === acc.accountNumber ? 'rgba(34,197,94,.1)' : 'rgba(255,255,255,.04)',
+                                                        border: `1px solid ${selectedAccount === acc.accountNumber ? 'rgba(34,197,94,.35)' : 'rgba(255,255,255,.08)'}`,
                                                         transition: '.2s',
                                                     }}
                                                 >
@@ -468,76 +450,56 @@ export default function Transfer() {
                                                         </div>
                                                         <div style={{ textAlign: 'left' }}>
                                                             <p style={{ margin: 0, fontSize: '.88rem', color: '#e2e8f0', fontWeight: 600 }}>{acc.fullName}</p>
-                                                            <p style={{ margin: 0, fontSize: '.74rem', color: '#475569', fontFamily: 'monospace' }}>#{acc.accountNumber}</p>
+                                                            <p style={{ margin: 0, fontSize: '.75rem', color: '#475569', fontFamily: 'monospace' }}>#{acc.accountNumber}</p>
                                                         </div>
                                                     </div>
-                                                    <span style={{ fontSize: '.82rem', fontWeight: 700, color: '#38bdf8' }}>{formatBRL(acc.balance)}</span>
+                                                    <span style={{ fontSize: '.82rem', fontWeight: 700, color: '#22c55e' }}>
+                                                        {formatBRL(acc.balance)}
+                                                    </span>
                                                 </button>
                                             ))}
                                         </div>
-                                    ) : fromAcc ? (
-                                        <div style={{
+                                    </motion.div>
+                                )}
+
+                                {/* Conta única — info */}
+                                {accounts.length === 1 && selectedAcc && (
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .16 }}
+                                        style={{
                                             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                             background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)',
-                                            borderRadius: 14, padding: '13px 16px',
-                                        }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                                <div style={{
-                                                    width: 36, height: 36, borderRadius: '50%',
-                                                    background: 'linear-gradient(135deg, #2563eb, #facc15)',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    fontSize: '.9rem', fontWeight: 800, color: '#020617',
-                                                }}>
-                                                    {fromAcc.fullName?.charAt(0).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <p style={{ margin: 0, fontSize: '.88rem', color: '#e2e8f0', fontWeight: 600 }}>{fromAcc.fullName}</p>
-                                                    <p style={{ margin: 0, fontSize: '.74rem', color: '#475569', fontFamily: 'monospace' }}>#{fromAcc.accountNumber}</p>
-                                                </div>
+                                            borderRadius: 14, padding: '14px 16px',
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                            <div style={{
+                                                width: 36, height: 36, borderRadius: '50%',
+                                                background: 'linear-gradient(135deg, #2563eb, #facc15)',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontSize: '.9rem', fontWeight: 800, color: '#020617',
+                                            }}>
+                                                {selectedAcc.fullName?.charAt(0).toUpperCase()}
                                             </div>
-                                            <div style={{ textAlign: 'right' }}>
-                                                <p style={{ margin: 0, fontSize: '.72rem', color: '#475569' }}>Saldo</p>
-                                                <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 700, color: '#38bdf8' }}>{formatBRL(fromAcc.balance)}</p>
+                                            <div>
+                                                <p style={{ margin: 0, fontSize: '.88rem', color: '#e2e8f0', fontWeight: 600 }}>{selectedAcc.fullName}</p>
+                                                <p style={{ margin: 0, fontSize: '.75rem', color: '#475569', fontFamily: 'monospace' }}>#{selectedAcc.accountNumber}</p>
                                             </div>
                                         </div>
-                                    ) : null}
-                                </motion.div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <p style={{ margin: 0, fontSize: '.72rem', color: '#475569' }}>Saldo atual</p>
+                                            <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 700, color: '#22c55e' }}>{formatBRL(selectedAcc.balance)}</p>
+                                        </div>
+                                    </motion.div>
+                                )}
 
-                                {/* Seta */}
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <div style={{
-                                        width: 36, height: 36, borderRadius: '50%',
-                                        background: 'rgba(37,99,235,.12)', border: '1px solid rgba(37,99,235,.25)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    }}>
-                                        <i className="pi pi-arrow-down" style={{ color: '#2563eb', fontSize: '.85rem', animation: 'arrow-slide 1.5s ease-in-out infinite' }} />
-                                    </div>
-                                </div>
-
-                                {/* Conta de destino */}
+                                {/* Input de valor */}
                                 <motion.div
                                     initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .22 }}
                                     style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
                                 >
                                     <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>
-                                        Conta de destino
-                                    </label>
-                                    <FloatInput
-                                        label="Número da conta"
-                                        icon="pi-user"
-                                        value={toAccount}
-                                        onChange={e => setToAccount(e.target.value)}
-                                        monospace
-                                    />
-                                </motion.div>
-
-                                {/* Valor */}
-                                <motion.div
-                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .28 }}
-                                    style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-                                >
-                                    <label style={{ fontSize: '.75rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>
-                                        Valor
+                                        Valor do depósito
                                     </label>
                                     <AmountInput value={amount} onChange={handleAmountChange} />
 
@@ -545,12 +507,12 @@ export default function Transfer() {
                                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                         {QUICK_VALUES.map(v => (
                                             <button
-                                                key={v} type="button" onClick={() => setAmount(String(v))}
+                                                key={v} type="button" onClick={() => applyQuick(v)}
                                                 style={{
                                                     flex: 1, minWidth: 60, padding: '7px 4px', borderRadius: 10,
-                                                    background: amount === String(v) ? 'rgba(37,99,235,.18)' : 'rgba(255,255,255,.05)',
-                                                    border: `1px solid ${amount === String(v) ? 'rgba(37,99,235,.4)' : 'rgba(255,255,255,.08)'}`,
-                                                    color: amount === String(v) ? '#38bdf8' : '#64748b',
+                                                    background: amount === String(v) ? 'rgba(34,197,94,.18)' : 'rgba(255,255,255,.05)',
+                                                    border: `1px solid ${amount === String(v) ? 'rgba(34,197,94,.4)' : 'rgba(255,255,255,.08)'}`,
+                                                    color: amount === String(v) ? '#22c55e' : '#64748b',
                                                     fontSize: '.78rem', fontWeight: 700, cursor: 'pointer', transition: '.2s',
                                                 }}
                                                 onMouseEnter={e => { if (amount !== String(v)) { e.currentTarget.style.background = 'rgba(255,255,255,.09)'; e.currentTarget.style.color = '#94a3b8' } }}
@@ -564,7 +526,7 @@ export default function Transfer() {
 
                                 {/* Descrição */}
                                 <motion.div
-                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .32 }}
+                                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .28 }}
                                 >
                                     <FloatInput
                                         label="Descrição (opcional)"
@@ -574,30 +536,25 @@ export default function Transfer() {
                                     />
                                 </motion.div>
 
-                                {/* Preview saldo após */}
-                                {parsed > 0 && fromAcc && (
+                                {/* Preview */}
+                                {amount && parseFloat(amount) > 0 && selectedAcc && (
                                     <motion.div
                                         initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
                                         style={{
-                                            background: saldoApos < 0 ? 'rgba(239,68,68,.08)' : 'rgba(37,99,235,.07)',
-                                            border: `1px solid ${saldoApos < 0 ? 'rgba(239,68,68,.2)' : 'rgba(37,99,235,.2)'}`,
+                                            background: 'rgba(34,197,94,.07)', border: '1px solid rgba(34,197,94,.18)',
                                             borderRadius: 14, padding: '14px 16px',
                                             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                         }}
                                     >
                                         <div>
                                             <p style={{ margin: 0, fontSize: '.72rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '.06em', fontWeight: 600 }}>
-                                                Saldo após transferência
+                                                Saldo após depósito
                                             </p>
-                                            <p style={{
-                                                margin: '4px 0 0', fontSize: '1.1rem', fontWeight: 800,
-                                                color: saldoApos < 0 ? '#ef4444' : '#38bdf8',
-                                            }}>
-                                                {saldoApos < 0 ? '⚠ Saldo insuficiente' : formatBRL(saldoApos)}
+                                            <p style={{ margin: '4px 0 0', fontSize: '1.1rem', fontWeight: 800, color: '#22c55e' }}>
+                                                {formatBRL(Number(selectedAcc.balance) + parseFloat(amount))}
                                             </p>
                                         </div>
-                                        <i className={`pi ${saldoApos < 0 ? 'pi-exclamation-triangle' : 'pi-arrow-up-right'}`}
-                                            style={{ fontSize: '1.4rem', color: saldoApos < 0 ? 'rgba(239,68,68,.5)' : 'rgba(37,99,235,.5)' }} />
+                                        <i className="pi pi-arrow-up-right" style={{ fontSize: '1.4rem', color: 'rgba(34,197,94,.5)' }} />
                                     </motion.div>
                                 )}
 
@@ -607,14 +564,16 @@ export default function Transfer() {
                                     whileTap={!loading ? { scale: .97 } : {}}
                                     type="submit"
                                     disabled={loading || fetchingAccounts}
-                                    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .38 }}
+                                    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .34 }}
                                     style={{
                                         width: '100%', marginTop: 4, padding: '15px 20px',
                                         border: 'none', borderRadius: 14,
-                                        background: loading ? 'rgba(37,99,235,.4)' : 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%)',
+                                        background: loading
+                                            ? 'rgba(34,197,94,.35)'
+                                            : 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #38bdf8 100%)',
                                         color: '#fff', fontWeight: 800, fontSize: '.95rem',
                                         cursor: loading ? 'not-allowed' : 'pointer',
-                                        boxShadow: '0 10px 32px rgba(37,99,235,.35)',
+                                        boxShadow: '0 10px 32px rgba(34,197,94,.3)',
                                         position: 'relative', overflow: 'hidden',
                                     }}
                                 >
@@ -625,7 +584,7 @@ export default function Transfer() {
                                     }} />
                                     {loading
                                         ? <><i className="pi pi-spin pi-spinner" style={{ marginRight: 8 }} />Processando...</>
-                                        : <><i className="pi pi-send" style={{ marginRight: 8 }} />Confirmar transferência</>
+                                        : <><i className="pi pi-check" style={{ marginRight: 8 }} />Confirmar depósito</>
                                     }
                                 </motion.button>
 

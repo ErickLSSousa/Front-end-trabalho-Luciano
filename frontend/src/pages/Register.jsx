@@ -524,151 +524,155 @@ export default function Register() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: .22 }}
             >
-              <InputMask 
-              id="ssn" 
-              mask="999.999.999-99" 
-              placeholder="CPF"
-              >
-              </InputMask>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: .28 }}
-            >
-              <InputMask 
-              id="phone" 
-              mask="(99) 99999-9999" 
-              placeholder=""
-              >
-              </InputMask>
+              <InputMask
+                mask="999.999.999-99"
+                placeholder="CPF"
+                value={form.cpf}
+                onChange={e => setForm(prev => ({ ...prev, cpf: e.target.value }))}
+              />
           </motion.div>
-          </div>
 
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: .34 }}
+            transition={{ delay: .28 }}
           >
-            <InputText 
-              placeholder='E-mail'
-              keyfilter="email"
-            />
+            <InputMask
+              id="phone"
+              mask="(99) 99999-9999"
+              placeholder="Telefone"
+              value={form.phone}
+              onChange={e => setForm(prev => ({ ...prev, phone: e.target.value}))}
+            >
+            </InputMask>
           </motion.div>
+        </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 12
-            }}
-          >
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: .40 }}
-            >
-              <FloatPassword
-                label="Senha"
-                value={form.password}
-                onChange={handlePassword('password')}
-              />
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: .34 }}
+        >
+          <InputText
+            placeholder='E-mail'
+            keyfilter="email"
+            value={form.email}
+            onChange={e => setForm(prev => ({ ...prev, email: e.target.value}))}
+          />
+        </motion.div>
 
-              <PasswordStrength password={form.password} />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: .46 }}
-            >
-              <FloatPassword
-                label="Confirmar senha"
-                value={form.confirmPassword}
-                onChange={handlePassword('confirmPassword')}
-              />
-            </motion.div>
-          </div>
-
-          <motion.button
-            whileHover={{ y: -3, scale: 1.01 }}
-            whileTap={{ scale: .98 }}
-            disabled={loading}
-            type="submit"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: .52 }}
-            style={{
-              width: '100%',
-              marginTop: 8,
-              border: 'none',
-              borderRadius: 14,
-              padding: '15px 20px',
-              position: 'relative',
-              overflow: 'hidden',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              background: loading
-                ? 'rgba(37,99,235,.4)'
-                : 'linear-gradient(135deg, #2563eb 0%, #38bdf8 45%, #facc15 100%)',
-              color: '#020617',
-              fontWeight: 800,
-              fontSize: '.95rem',
-              boxShadow: '0 10px 32px rgba(37,99,235,.35)'
-            }}
-          >
-            <span
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '-100%',
-                width: '50%',
-                height: '100%',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent)',
-                transform: 'skewX(-20deg)',
-                animation: 'shine 2.8s infinite'
-              }}
-            />
-
-            {loading ? (
-              <>
-                <i className="pi pi-spin pi-spinner" style={{ marginRight: 8 }} />
-                Criando conta...
-              </>
-            ) : (
-              <>
-                <i className="pi pi-check" style={{ marginRight: 8 }} />
-                Criar conta
-              </>
-            )}
-          </motion.button>
-        </form>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: .6 }}
+        <div
           style={{
-            marginTop: 22,
-            textAlign: 'center',
-            color: '#64748b',
-            fontSize: '.85rem'
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 12
           }}
         >
-          Já possui conta?{' '}
-
-          <Link
-            to="/login"
-            style={{
-              color: '#facc15',
-              textDecoration: 'none',
-              fontWeight: 700
-            }}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: .40 }}
           >
-            Entrar agora →
-          </Link>
-        </motion.p>
-      </motion.div>
-    </div>
+            <FloatPassword
+              label="Senha"
+              value={form.password}
+              onChange={handlePassword('password')}
+            />
+
+            <PasswordStrength password={form.password} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: .46 }}
+          >
+            <FloatPassword
+              label="Confirmar senha"
+              value={form.confirmPassword}
+              onChange={handlePassword('confirmPassword')}
+            />
+          </motion.div>
+        </div>
+
+        <motion.button
+          whileHover={{ y: -3, scale: 1.01 }}
+          whileTap={{ scale: .98 }}
+          disabled={loading}
+          type="submit"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: .52 }}
+          style={{
+            width: '100%',
+            marginTop: 8,
+            border: 'none',
+            borderRadius: 14,
+            padding: '15px 20px',
+            position: 'relative',
+            overflow: 'hidden',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            background: loading
+              ? 'rgba(37,99,235,.4)'
+              : 'linear-gradient(135deg, #2563eb 0%, #38bdf8 45%, #facc15 100%)',
+            color: '#020617',
+            fontWeight: 800,
+            fontSize: '.95rem',
+            boxShadow: '0 10px 32px rgba(37,99,235,.35)'
+          }}
+        >
+          <span
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '-100%',
+              width: '50%',
+              height: '100%',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent)',
+              transform: 'skewX(-20deg)',
+              animation: 'shine 2.8s infinite'
+            }}
+          />
+
+          {loading ? (
+            <>
+              <i className="pi pi-spin pi-spinner" style={{ marginRight: 8 }} />
+              Criando conta...
+            </>
+          ) : (
+            <>
+              <i className="pi pi-check" style={{ marginRight: 8 }} />
+              Criar conta
+            </>
+          )}
+        </motion.button>
+      </form>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: .6 }}
+        style={{
+          marginTop: 22,
+          textAlign: 'center',
+          color: '#64748b',
+          fontSize: '.85rem'
+        }}
+      >
+        Já possui conta?{' '}
+
+        <Link
+          to="/login"
+          style={{
+            color: '#facc15',
+            textDecoration: 'none',
+            fontWeight: 700
+          }}
+        >
+          Entrar agora →
+        </Link>
+      </motion.p>
+    </motion.div>
+    </div >
   )
 }
